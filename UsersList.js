@@ -1,8 +1,15 @@
 import React, {useEffect, useState} from 'react'
-import { ScrollView, StyleSheet, View, Text, FlatList } from 'react-native'
+import { ScrollView, StyleSheet, View, Text, FlatList, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { AntDesign } from '@expo/vector-icons'
+import { useFonts } from 'expo-font'
+
 
 export default function App() {
     const [users,setUsers] = useState([])
+
+    let [fontsLoaded] = useFonts({
+        'Loutre': require('./assets/fonts/Loutre.ttf')
+    })
 
     useEffect(() => {
         // axios.get('https://jsonplaceholder.typicode.com/users')
@@ -13,7 +20,14 @@ export default function App() {
             .then(json => setUsers(json))
     }, [])
 
-    return (
+    function hello() {
+        console.log("coucou");
+    }
+
+    if(!fontsLoaded) {
+        return <Text>Police en cours de récupération...</Text>
+    }
+    else return (
         <View style={styles.container}>
             {/* <ScrollView>
                 {users.map(user => (
@@ -25,9 +39,13 @@ export default function App() {
             <FlatList
                 data={users}
                 renderItem={({item}) => (
-                    <View style={styles.user}>
-                        <Text style={styles.userName}>{item.name}</Text>
-                    </View>
+                    <TouchableWithoutFeedback onPress={hello} >
+                        <View style={styles.user}>
+                            <Text style={styles.userName}>{item.name}</Text>
+                                <AntDesign name="user" size={32} color="black"
+                                />
+                        </View>
+                    </TouchableWithoutFeedback>
                 )}
                 keyExtractor={item => item.id}
             />
@@ -44,9 +62,13 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         backgroundColor: 'lightgray',
         padding: 15,
-        margin: 10
+        margin: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+
     },
     userName: {
-        fontSize: 32
+        fontSize: 24,
+        fontFamily: 'Loutre'
     }
 })
